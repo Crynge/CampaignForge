@@ -1,84 +1,109 @@
-<div align="center">
-  <img src="docs/assets/logo.svg" alt="CampaignForge" width="480">
-  <p><strong>Multi-Agent Marketing Campaign Orchestration Platform</strong></p>
-  <p>AI agents for content strategy · copywriting · SEO · social media · performance analysis</p>
+[![CI](https://github.com/Crynge/CampaignForge/actions/workflows/ci.yml/badge.svg)](https://github.com/Crynge/CampaignForge/actions/workflows/ci.yml)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6)](https://typescriptlang.org)
+[![Python](https://img.shields.io/badge/Python-3.11-3776AB)](https://python.org)
 
-  [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://python.org)
-  [![TypeScript](https://img.shields.io/badge/TypeScript-5.4%2B-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-  [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-  [![CI](https://github.com/Crynge/CampaignForge/actions/workflows/ci.yml/badge.svg)](https://github.com/Crynge/CampaignForge/actions/workflows/ci.yml)
-  [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
-  [![GitHub Stars](https://img.shields.io/github/stars/Crynge/CampaignForge?style=social)](https://github.com/Crynge/CampaignForge)
+# CampaignForge
 
-</div>
+**Marketing campaign orchestration dashboard.**
+
+Plan, launch, and optimize multi-channel campaigns through a unified dashboard with AI-powered agents that automate workflows, analyze performance, and suggest optimizations.
 
 ---
 
-## Overview
-
-CampaignForge orchestrates specialized AI agents to plan, create, optimize, and analyze marketing campaigns. Each agent brings domain expertise — content strategy, copywriting, SEO, social media, and performance analysis — and they collaborate through a central orchestrator.
-
-## Key Features
-
-- **Multi-agent orchestration** — Agents collaborate on campaign lifecycle
-- **Content strategy engine** — Data-driven content planning and topic clustering
-- **AI copywriting** — On-brand copy generation for all channels
-- **SEO analysis** — Keyword research, gap analysis, and optimization
-- **Social media management** — Cross-platform posting strategy and scheduling
-- **Performance analytics** — Campaign ROI attribution and recommendations
-
-## Architecture
+## Campaign Board
 
 ```
-User Input → CampaignOrchestrator → ContentStrategist → Copywriter
-                                      → SEOAnalyst      → SocialManager
-                                                        → PerformanceAnalyst
-                                         → Unified Campaign Plan
+┌─────────────────────────────────────────────────────────────────┐
+│  CAMPAIGN PIPELINE                                      + New  │
+├──────────┬──────────┬──────────┬──────────┬─────────────────────┤
+│  DRAFT   │  ACTIVE  │  REVIEW  │ COMPLETE │                     │
+├──────────┼──────────┼──────────┼──────────┤                     │
+│  ☐ Q3    │  ▶ Summer│  🔍 Email│  ✓ Spring│                     │
+│   Launch │   Sale   │   Series │   Launch │                     │
+│   Due 8/1│   Live   │   Pending│   Done   │                     │
+│          │   ROAS:  │   Rev:   │   ROAS:  │                     │
+│          │   3.2x   │   $12.4K │   4.1x   │                     │
+├──────────┼──────────┼──────────┼──────────┤                     │
+│  ☐ Back  │  ▶ Retar-│          │          │                     │
+│   to     │   get    │          │          │                     │
+│   School │   Active │          │          │                     │
+│   Due 9/1│   CTR:+5%│          │          │                     │
+└──────────┴──────────┴──────────┴──────────┴─────────────────────┘
 ```
+
+## Features
+
+| Feature | Description |
+|---|---|
+| **Campaign Canvas** | Drag-and-drop campaign builder with timeline view |
+| **AI Orchestrator** | Python agent that manages campaign workflows autonomously |
+| **Multi-channel** | Email, social, display, search, and direct mail |
+| **Budget Tracking** | Real-time spend vs. budget across all channels |
+| **A/B Testing** | Built-in experiment designer with statistical analysis |
+| **Automated Reports** | PDF and CSV exports with executive summaries |
 
 ## Quick Start
 
 ```bash
-pip install -e .
-python -m campaignforge plan --brief "Q4 product launch"
+npm install @crynge/campaignforge
+
+# Start the dashboard
+npx campaignforge dashboard --port 3000
+
+# Run the orchestrator
+npx campaignforge orchestrate --config campaigns.yaml
 ```
 
-## Installation
+```typescript
+import { CampaignManager } from '@crynge/campaignforge/api/server';
 
-```bash
-git clone https://github.com/Crynge/CampaignForge.git
-cd CampaignForge
-pip install -e ".[dev]"
-npm install
+const campaign = await CampaignManager.create({
+  name: 'Q3 Product Launch',
+  channels: ['email', 'linkedin', 'google'],
+  budget: 75000,
+  startDate: '2026-07-15',
+  endDate: '2026-09-30',
+  segments: ['enterprise', 'smb'],
+});
+
+await campaign.launch();
 ```
 
-## Usage
+## Orchestrator
 
 ```python
-from campaignforge import CampaignOrchestrator
+from campaignforge.orchestrator import CampaignOrchestrator
 
 orchestrator = CampaignOrchestrator(
-    brand_voice="professional",
-    channels=["blog", "twitter", "linkedin", "email"],
-    budget=50000
+    channels=["email", "social", "search"],
+    budget=100000,
+    objective="lead_generation",
 )
 
-campaign = orchestrator.launch(
-    name="Q4 Product Launch",
-    target_audience="enterprise CTOs",
-    key_message="10x productivity with AI",
-    timeline="2026-10-01 to 2026-12-31"
-)
-
-print(campaign.summary())
+workflow = orchestrator.plan()
+for step in workflow:
+    print(f"[{step.channel}] {step.action} — Due: {step.deadline}")
+    step.execute()
 ```
 
-## Agent Roles
+## API Endpoints
 
-| Agent | Role | Tools |
-|-------|------|-------|
-| ContentStrategist | Topic research, content calendar, gap analysis | Keyword planner, trend detection |
-| Copywriter | Ad copy, email drafts, blog outlines, social posts | Tone analyzer, brand voice DB |
-| SEOAnalyst | Keyword optimization, meta tags, internal linking | SERP scraper, rank tracker |
-| SocialManager | Post scheduling, platform strategy, engagement plan | Platform APIs, calendar |
-| PerformanceAnalyst | ROI tracking, attribution, A/B test recommendations | Analytics connector, reporting |
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/api/campaigns` | List all campaigns |
+| `POST` | `/api/campaigns` | Create campaign |
+| `PUT` | `/api/campaigns/:id` | Update campaign |
+| `POST` | `/api/campaigns/:id/launch` | Launch campaign |
+| `GET` | `/api/campaigns/:id/metrics` | Get performance metrics |
+
+## Modules
+
+```
+src/
+├── api/
+│   └── server.ts              # REST API
+├── campaignforge/
+│   └── orchestrator.py        # AI workflow orchestration
+└── agents/
+    └── agent.py               # Campaign monitoring agents
+```
